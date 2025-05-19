@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>StreamSage | Search</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Search</h1>
+    <nav>
+      <a href="home.html">Home</a>
+      <a href="search.html">Search</a>
+      <a href="profile.html">Profile</a>
+    </nav>
+  </header>
+
+  <main>
+    <input type="text" id="search-input" placeholder="Search movies or shows..." />
+    <button onclick="searchContent()">Search</button>
+    <div id="search-results" class="grid"></div>
+  </main>
+
+  <script>
+    async function searchContent() {
+      const query = document.getElementById('search-input').value;
+      if (!query) return;
+
+      const res = await fetch(`/api/tmdb/search?q=${encodeURIComponent(query)}`);
+      const data = await res.json();
+      const results = document.getElementById('search-results');
+      results.innerHTML = '';
+
+      data.results.forEach(item => {
+        const div = document.createElement('div');
+        div.classList.add('card');
+        div.innerHTML = `
+          <img src="https://image.tmdb.org/t/p/w200${item.poster_path}" alt="${item.title || item.name}">
+          <h3>${item.title || item.name}</h3>
+          <a href="details.html?id=${item.id}&type=${item.media_type}">Details</a>
+        `;
+        results.appendChild(div);
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!-- profile.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Your Profile</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>User Profile</h1>
+    <nav>
+      <a href="home.html">Home</a>
+      <a href="search.html">Search</a>
+      <a href="profile.html">Profile</a>
+    </nav>
+  </header>
+
+  <main>
+    <section>
+      <h2>Your Rated Shows</h2>
+      <ul id="ratings-list"></ul>
+    </section>
+  </main>
+
+  <script>
+    async function loadUserRatings() {
+      const res = await fetch('/api/user/ratings');
+      const data = await res.json();
+      const list = document.getElementById('ratings-list');
+
+      if (data.length === 0) {
+        list.innerHTML = '<li>No ratings found. Go rate something!</li>';
+        return;
+      }
+
+      list.innerHTML = data.map(r => `
+        <li>
+          <strong>${r.title}</strong> (${r.type}) - Rating: ${r.rating}/10
+        </li>
+      `).join('');
+    }
+
+    loadUserRatings();
+  </script>
+</body>
+</html>
+
